@@ -2,9 +2,10 @@
 
 # dependencies
 /node_modules
+/.vscode
 /.pnp
 .pnp.js
-.eslintrc.js
+/.eslintrc.js
 
 # testing
 /coverage
