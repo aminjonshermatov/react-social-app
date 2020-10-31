@@ -15,6 +15,7 @@ function Wall() {
             hit: true,
             likes: 222,
             likedByMe: true,
+            hidden: true,
             tags: ['deadline', 'homework'],
             created: 1603774800
         },
@@ -31,6 +32,7 @@ function Wall() {
                 alt: 'openjs logo'
             },
             hit: true,
+            hidden: false,
             likes: 10,
             likedByMe: true,
             tags: ['deadline'],
@@ -55,13 +57,43 @@ function Wall() {
         }));
     };
 
+    const handlePostShow = id => {
+        setPosts(prevState => prevState.map(item => {
+            if (item.id !== id) {
+                return item;
+            }
+
+            const hidden = false;
+
+            return {
+                ...item,
+                hidden
+            };
+        }));
+    };
+
+    const handlePostHide = id => {
+        setPosts(prevState => prevState.map(item => {
+            if (item.id !== id) {
+                return item;
+            }
+
+            const hidden = true;
+
+            return {
+                ...item,
+                hidden
+            };
+        }));
+    };
+
     const handlePostRemove = id => {
         setPosts(prevState => prevState.filter(item => item.id !== id));
     }
 
     return (
         <div>
-            {posts.map(item => <Post key={item.id} post={item} onLike={handlePostLike} onRemove={handlePostRemove} />)}
+            {posts.map(item => <Post key={item.id} post={item} onLike={handlePostLike} onRemove={handlePostRemove} onHide={handlePostHide} onShow={handlePostShow} />)}
         </div>
     )
 }

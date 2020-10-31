@@ -2,7 +2,7 @@ import React from 'react'
 import './Post.css'
 import Tags from '../Tags/Tags';
 
-function Post({post, onLike, onRemove}) {
+function Post({post, onLike, onRemove, onHide, onShow}) {
     const {author, photo, tags} = post;
 
     const handleClick = () => {
@@ -12,6 +12,32 @@ function Post({post, onLike, onRemove}) {
     const handleRemove = () => {
         onRemove(post.id);
     };
+
+    const handleHide = () => {
+        onHide(post.id);
+    };
+
+    const handleShow = () => {
+        onShow(post.id);
+    };
+
+    if (post.hidden) {
+        return (
+            <article>
+                <header>
+                    <img
+                        src={author.avatar}
+                        className="Post-avatar"
+                        width="50"
+                        height="50"
+                        alt={author.name}
+                    />
+                    <h5>{author.name}</h5>
+                    <button onClick={handleShow}>показать</button>
+                </header>
+            </article>
+        );
+    }
     
     return (
         <article>
@@ -25,6 +51,7 @@ function Post({post, onLike, onRemove}) {
                 />
                 <h5>{author.name}</h5>
                 <button onClick={handleRemove}>удалить</button>
+                <button onClick={handleHide}>скрыть</button>
                 <div>{post.created}</div>
                 {post.hit && <span>HIT</span>}
             </header>
@@ -45,7 +72,7 @@ function Post({post, onLike, onRemove}) {
                 </span>
             </footer>
         </article>
-    )
+    );
 }
 
 export default Post
