@@ -1,8 +1,8 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Post from '../Post/Post';
 
 function Wall() {
-    const posts = [
+    const [posts, setPosts] = useState([
         {
             id: 2,
             author: {
@@ -36,12 +36,32 @@ function Wall() {
             tags: ['deadline'],
             created: 1603501200
         }
-    ];
+    ]);
 
+    const handlePostLike = id => {
+        setPosts(prevState => prevState.map(item => {
+            if (item.id !== id) {
+                return item;
+            }
+
+            const likedByMe = !item.likedByMe;
+            const likes = likedByMe ? item.likes + 1 : item.likes - 1;
+
+            return {
+                ...item,
+                likedByMe,
+                likes
+            };
+        }));
+    };
+
+    const handlePostRemove = id => {
+        setPosts(prevState => prevState.filter(item => item.id !== id));
+    }
 
     return (
         <div>
-            {posts.map(item => <Post key={item.id} post={item} />)}
+            {posts.map(item => <Post key={item.id} post={item} onLike={handlePostLike} onRemove={handlePostRemove} />)}
         </div>
     )
 }
