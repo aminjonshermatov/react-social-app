@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import Post from '../Post/Post';
+import PostForm from '../PostForm/PostForm';
 
 function Wall() {
     const [posts, setPosts] = useState([
@@ -91,10 +92,24 @@ function Wall() {
         setPosts(prevState => prevState.filter(item => item.id !== id));
     }
 
+    const handleSave = post => {
+        setPosts(prevState => [{...post}, ...prevState]);
+    };
+
     return (
-        <div>
-            {posts.map(item => <Post key={item.id} post={item} onLike={handlePostLike} onRemove={handlePostRemove} onHide={handlePostHide} onShow={handlePostShow} />)}
-        </div>
+        <>
+            <PostForm onSave={handleSave}/>
+            <div>
+                {posts.map(item => <Post
+                                    key={item.id}
+                                    post={item}
+                                    onLike={handlePostLike}
+                                    onRemove={handlePostRemove}
+                                    onHide={handlePostHide}
+                                    onShow={handlePostShow}
+                />)}
+            </div>
+        </>
     )
 }
 
