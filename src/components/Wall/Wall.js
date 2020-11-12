@@ -40,6 +40,7 @@ function Wall() {
             created: 1603501200
         }
     ]);
+    const [edited, setEdited] = useState();
 
     const handlePostLike = id => {
         setPosts(prevState => prevState.map(item => {
@@ -58,32 +59,15 @@ function Wall() {
         }));
     };
 
-    const handlePostShow = id => {
+    const handleTogglePostVisibility = id => {
         setPosts(prevState => prevState.map(item => {
             if (item.id !== id) {
                 return item;
             }
 
-            const hidden = false;
-
             return {
                 ...item,
-                hidden
-            };
-        }));
-    };
-
-    const handlePostHide = id => {
-        setPosts(prevState => prevState.map(item => {
-            if (item.id !== id) {
-                return item;
-            }
-
-            const hidden = true;
-
-            return {
-                ...item,
-                hidden
+                hidden: !item.hidden
             };
         }));
     };
@@ -92,21 +76,46 @@ function Wall() {
         setPosts(prevState => prevState.filter(item => item.id !== id));
     }
 
-    const handleSave = post => {
+    const handlePostEdit = id => {
+        const post = posts.find(el => el.id === id);
+        if (post === undefined) {
+            return;
+        }
+
+        setEdited(post);
+    };
+
+    const handlePostSave = post => {
+        if (edited !== undefined) {
+            setPosts(prevState => prevState.map(el => {
+                if (el.id !== post.id) {
+                    return el;
+                }
+
+                return {...post};
+            }));
+            setEdited(undefined);
+            return;
+        }
         setPosts(prevState => [{...post}, ...prevState]);
+    };
+
+    const handlePostEditCancel = () => {
+        setEdited(undefined);
     };
 
     return (
         <>
-            <PostForm onSave={handleSave}/>
+            <PostForm edited={edited} onCancel={handlePostEditCancel} onSave={handlePostSave}/>
             <div>
                 {posts.map(item => <Post
                                     key={item.id}
                                     post={item}
                                     onLike={handlePostLike}
                                     onRemove={handlePostRemove}
-                                    onHide={handlePostHide}
-                                    onShow={handlePostShow}
+                                    onHide={handleTogglePostVisibility}
+                                    onEdit={handlePostEdit}
+                                    onShow={handleTogglePostVisibility}
                 />)}
             </div>
         </>

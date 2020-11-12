@@ -2,7 +2,7 @@ import React from 'react'
 import './Post.css'
 import Tags from '../Tags/Tags';
 
-function Post({post, onLike, onRemove, onHide, onShow}) {
+function Post({post, onLike, onRemove, onHide, onShow, onEdit}) {
     const {author, photo, tags} = post;
 
     const handleClick = () => {
@@ -19,6 +19,10 @@ function Post({post, onLike, onRemove, onHide, onShow}) {
 
     const handleShow = () => {
         onShow(post.id);
+    };
+
+    const handleEdit = () => {
+        onEdit(post.id);
     };
 
     if (post.hidden) {
@@ -52,6 +56,7 @@ function Post({post, onLike, onRemove, onHide, onShow}) {
                 <h5>{author.name}</h5>
                 <button onClick={handleRemove}>удалить</button>
                 <button onClick={handleHide}>скрыть</button>
+                <button onClick={handleEdit}>изменить</button>
                 <div>{post.created}</div>
                 {post.hit && <span>HIT</span>}
             </header>
