@@ -66,7 +66,6 @@ const reduceSubmit = (state) => {
 const reduceChange = (state, action) => {
     const { edited } = state;
     const { payload: { name, value } } = action;
-    
     if (name === 'tags') {
         const parsed = value.split(' ');
         return {
@@ -89,6 +88,80 @@ const reduceChange = (state, action) => {
     };
 };
 
+const reducePostLike = (state, action) => {
+    const { posts } = state;
+    const { payload: { id } } = action;
+
+    return {
+        ...state,
+        posts: posts.map(item => {
+            if (item.id !== id) {
+                return item;
+            }
+
+            const likedByMe = !item.likedByMe;
+            const likes = likedByMe ? item.likes + 1 : item.likes - 1;
+
+            return {
+                ...item,
+                likedByMe,
+                likes
+            };
+        })
+    };
+};
+
+const reducePostRemove = (state, action) => {
+    const { posts } = state;
+    const { payload: { id } } = action;
+
+    return {
+        ...state,
+        posts: posts.filter(item => item.id !== id)
+    };
+};
+
+const reducePostToggleVisibility = (state, action) => {
+    const { posts } = state;
+    const { payload: { id } } = action;
+
+    return {
+        ...state,
+        posts: posts.map(item => {
+            if (item.id !== id) {
+                return item;
+            }
+
+            return {
+                ...item,
+                hidden: !item.hidden
+            };
+        })
+    };
+};
+
+const reducePostEdit = (state, action) => {
+    const { posts } = state;
+    const { payload: { id } } = action;
+
+    const post = posts.find(el => el.id === id);
+    if (post === undefined) {
+        return;
+    }
+
+    return {
+        ...state,
+        edited: post
+    };
+};
+
+const reduceCancel = (state) => {
+    return {
+        ...state,
+        edited: empty
+    };
+};
+
 export const reducer = (state = initialState, action) => {
     switch (action.type) {
         case POST_EDIT_SUBMIT:
@@ -96,17 +169,17 @@ export const reducer = (state = initialState, action) => {
         case POST_EDIT_CHANGE:
             return reduceChange(state, action);
         case POST_EDIT_CANCEL:
-            return state;
+            return reduceCancel(state, action);
         case POST_LIKE:
-            return state;
+            return reducePostLike(state, action);
         case POST_REMOVE:
-            return state;
+            return reducePostRemove(state, action);
         case POST_HIDE:
-            return state;
+            return reducePostToggleVisibility(state, action);
         case POST_SHOW:
-            return state;
+            return reducePostToggleVisibility(state, action);
         case POST_EDIT:
-            return state;
+            return reducePostEdit(state, action);
         default:
             return state;
     }

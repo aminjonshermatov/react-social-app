@@ -3,14 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { Provider } from "react-redux";
-import store from "./store";
+import PostsProvider from "./contexts/PostsProvider";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
+    <PostsProvider>
       <App />
-    </Provider>
+    </PostsProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
