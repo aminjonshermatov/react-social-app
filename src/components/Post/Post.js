@@ -1,28 +1,32 @@
 import React from 'react'
 import './Post.css'
 import Tags from '../Tags/Tags';
+import { edit, hide, like, remove, show } from "../../store/actions";
+import { useDispatch } from "react-redux";
 
-function Post({post, onLike, onRemove, onHide, onShow, onEdit}) {
-    const {author, photo, tags} = post;
+function Post({post}) {
+    const { author, photo, tags } = post;
 
-    const handleClick = () => {
-        onLike(post.id);
+    const dispatch = useDispatch();
+
+    const handleLike = () => {
+        dispatch(like(post.id));
     };
 
     const handleRemove = () => {
-        onRemove(post.id);
+        dispatch(remove(post.id));
     };
 
     const handleHide = () => {
-        onHide(post.id);
+        dispatch(hide(post.id));
     };
 
     const handleShow = () => {
-        onShow(post.id);
+        dispatch(show(post.id));
     };
 
     const handleEdit = () => {
-        onEdit(post.id);
+        dispatch(edit(post.id));
     };
 
     if (post.hidden) {
@@ -65,7 +69,7 @@ function Post({post, onLike, onRemove, onHide, onShow, onEdit}) {
                 {photo && <img src={photo.url} alt={photo.alt} className="Post-photo"/>}
             </div>
             <footer>
-                <span className="Post-likes" onClick={handleClick}>
+                <span className="Post-likes" onClick={handleLike}>
                     <img
                         src={post.likedByMe ? 'https://lms.openjs.io/liked.svg' : 'https://lms.openjs.io/unliked.svg'}
                         alt="likes"
