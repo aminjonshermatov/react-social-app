@@ -1,10 +1,12 @@
 import React, { useRef } from 'react';
-import { editSubmit, editChange, editCancel, postSaveRequest, postSaveSuccess, postSaveFail } from '../../store/actions'
+import { editChange, editCancel, postSaveRequest, postSaveSuccess, postSaveFail } from '../../store/actions'
+// editSubmit
 import { shallowEqual, useSelector, useDispatch } from "react-redux";
 
 export default function PostForm() {
     const dispatch = useDispatch();
-    const { item, loading, error } = useSelector(state => state.edited, shallowEqual);
+    // loading error
+    const { item } = useSelector(state => state.edited, shallowEqual);
     dispatch(postSaveRequest());
 
     const firstFocusEl = useRef(null);
