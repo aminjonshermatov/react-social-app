@@ -6,7 +6,13 @@ import {
     POST_LIKE,
     POST_REMOVE,
     POST_HIDE,
-    POST_SHOW
+    POST_SHOW,
+    POSTS_REQUEST,
+    POSTS_SUCCESS,
+    POSTS_FAIL,
+    POST_SAVE_REQUEST,
+    POST_SAVE_SUCCESS,
+    POST_SAVE_FAIL
 } from '../actions';
 
 const empty = {
@@ -26,8 +32,16 @@ const empty = {
 };
 
 export const initialState = {
-    posts: [],
-    edited: empty
+    posts: {
+        items: [],
+        loading: false,
+        error: null
+    },
+    edited: {
+        item: empty,
+        loading: false,
+        error: null
+    }
 };
 
 const reduceSubmit = (state) => {
@@ -64,13 +78,13 @@ const reduceSubmit = (state) => {
 };
 
 const reduceChange = (state, action) => {
-    const { edited } = state;
+    const { item } = state.edited;
     const { payload: { name, value } } = action;
     if (name === 'tags') {
         const parsed = value.split(' ');
         return {
             ...state,
-            edited: {...edited, [name]: parsed}
+            edited: {...state.edited, item: {...item, [name]: parsed}}
         };
     }
     
@@ -78,13 +92,13 @@ const reduceChange = (state, action) => {
         const prop = name === 'photo' ? 'url' : name;
         return {
             ...state,
-            edited: {...edited, photo: {...edited.photo, [prop]: value}}
+            edited: {...state.edited, item: {...item, photo: {...item.photo, [prop]: value}}}
         };
     }
 
     return {
         ...state,
-        edited: {...edited, [name]: value}
+        edited: {...state.edited, item: {...item, [name]: value}}
     };
 };
 
@@ -162,10 +176,90 @@ const reduceCancel = (state) => {
     };
 };
 
+const reducePostsRequest = (state) => {
+    return {
+        ...state,
+        posts: {
+            ...state.posts,
+            loading: true,
+            error: null
+        }
+    }
+};
+
+const reducePostsSuccess = (state, action) => {
+    console.log(action.payload.items.map(item => ({...empty, ...item})));
+    return {
+        ...state,
+        posts: {
+            // items: action.payload.items,
+            items: action.payload.items.map(item => ({...empty, ...item})),
+            loading: false,
+            error: null
+        }
+    }
+};
+
+const reducePostsFail = (state, action) => {
+    return {
+        ...state,
+        posts: {
+            ...state.posts,
+            loading: false,
+            error: action.payload.error
+        }
+    }
+};
+
+const reducePostSaveRequest = (state) => {
+    return {
+        ...state,
+        edited: {
+            ...state.edited,
+            loading: true,
+            error: null
+        }
+    };
+};
+
+const reducePostSaveSuccess = (state) => {
+    return {
+        ...state,
+        edited: {
+            edited: empty,
+            loading: false,
+            error: null
+        }
+    };
+};
+
+const reducePostSaveFail = (state, action) => {
+    return {
+        ...state,
+        edited: {
+            ...state.edited,
+            loading: false,
+            error: action.parsed.error
+        }
+    };
+};
+
 export const reducer = (state = initialState, action) => {
     switch (action.type) {
+        case POSTS_REQUEST:
+            return reducePostsRequest(state, action);
+        case POSTS_SUCCESS:
+            return reducePostsSuccess(state, action);
+        case POSTS_FAIL:
+            return reducePostsFail(state, action);
+        case POST_SAVE_REQUEST:
+            return reducePostSaveRequest(state, action);
+        case POST_SAVE_SUCCESS:
+            return reducePostSaveSuccess(state, action);
+        case POST_SAVE_FAIL:
+            return reducePostSaveFail(state, action);
         case POST_EDIT_SUBMIT:
-            return reduceSubmit(state);
+            return reduceSubmit(state, action);
         case POST_EDIT_CHANGE:
             return reduceChange(state, action);
         case POST_EDIT_CANCEL:
