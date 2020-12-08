@@ -1,7 +1,7 @@
 import React from 'react'
 import './Post.css'
 import Tags from '../Tags/Tags';
-import { edit, hide, like, remove, show } from "../../store/actions";
+import { hide, like, remove, show, postEdit } from "../../store/actions";
 import { useDispatch } from "react-redux";
 
 function Post({post}) {
@@ -26,7 +26,7 @@ function Post({post}) {
     };
 
     const handleEdit = () => {
-        dispatch(edit(post.id));
+        dispatch(postEdit());
     };
 
     if (post.hidden) {

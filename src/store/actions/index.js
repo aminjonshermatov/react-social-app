@@ -13,7 +13,6 @@ export const POST_LIKE = 'POST_LIKE';
 export const POST_REMOVE = 'POST_REMOVE';
 export const POST_HIDE = 'POST_HIDE';
 export const POST_SHOW = 'POST_SHOW';
-export const POST_EDIT = 'POST_EDIT';
 
 export const postSaveRequest = () => {
     return {
@@ -100,13 +99,6 @@ export const remove = id => {
     };
 };
 
-export const edit = id => {
-    return {
-        type: POST_EDIT,
-        payload: {id}
-    };
-};
-
 export const hide = id => {
     return {
         type: POST_HIDE,
@@ -119,4 +111,57 @@ export const show = id => {
         type: POST_SHOW,
         payload: {id}
     };
+};
+
+export const loadPosts = () => async dispatch => {
+    try {
+        dispatch(postsRequest());
+        const response = await fetch('http://localhost:5000/api/posts.get')
+        if (!response.ok) {
+            throw new Error('bad http ststus');
+        }
+
+        const body = await response.json();
+        dispatch(postsSuccess(body));
+    } catch (e) {
+        dispatch(postsFail(e));
+    }
+};
+
+export const savePost = () => async (dispatch, getState) => {
+    try {
+        const { item } = getState().edited;
+        dispatch(postSaveRequest());
+        const response = await fetch(`/api/posts.addPost`, {
+            method: 'POST',
+            body: JSON.stringify(item),
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            }
+            
+        });
+
+        if (!response.ok) {
+            throw new Error('bad http ststus');
+        }
+
+        const body = await response.json();
+        dispatch(postSaveSuccess(body));
+
+        dispatch(loadPosts());
+    } catch (e) {
+        dispatch(postSaveFail(e));
+    }
+};
+
+export const postEdit = id => async (dispatch, getState) => {
+    // dispatch(postSaveRequest());
+    const { posts } = getState().posts;
+    const post = posts.find(el => el.id === id);
+    if (post === undefined) {
+        dispatch(postSaveFail());
+    }
+
+    dispatch(editChange(post));
 };

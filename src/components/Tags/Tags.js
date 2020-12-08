@@ -4,7 +4,7 @@ function Tags({tags}) {
     return (
         <>
             {'теги: '}
-            {tags.map(item => <button key={item}>#{item}</button>)}
+            {tags.split(',').map(item => <button key={item}>#{item}</button>)}
         </>
     )
 }

@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
-import { editChange, editCancel, postSaveRequest, postSaveSuccess, postSaveFail } from '../../store/actions'
+// eslint-disable-next-line no-unused-vars
+import { editChange, editCancel, postSaveRequest, postSaveSuccess, postSaveFail, savePost } from '../../store/actions'
 // editSubmit
 import { shallowEqual, useSelector, useDispatch } from "react-redux";
 
@@ -12,30 +13,8 @@ export default function PostForm() {
     const firstFocusEl = useRef(null);
 
     const handleSubmit = ev => {
-        ev.preventDefault();
-        
-        fetch(`https://aminjonshermatov-nodeapp.herokuapp.com/posts.post?content=post${Math.random() * 50}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(item)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('bad http status');
-                }
-
-                return response.json();
-            })
-            .then(body => {
-                dispatch(postSaveSuccess(body));
-                // get posts
-            })
-            .catch(error => {
-                dispatch(postSaveFail(error));
-            });
-
+        ev.preventDefault();// https://express-mysql-social.herokuapp.com/api/posts.
+        dispatch(savePost());
         firstFocusEl.current.focus();
     };
 

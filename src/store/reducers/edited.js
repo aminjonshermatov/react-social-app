@@ -13,7 +13,10 @@ const empty = {
         name: 'OpenJS'
     },
     content: '',
-    photo: null,
+    photo: {
+        url: '',
+        alt: ''
+    },
     hit: false,
     likes: 0,
     likedByMe: false,
@@ -66,7 +69,7 @@ const reducePostSaveFail = (state, action) => {
     return {
         ...state,
         loading: false,
-        error: action.parsed.error
+        error: action?.parsed?.error
     };
 };
 

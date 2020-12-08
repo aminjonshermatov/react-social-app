@@ -23,7 +23,7 @@ const empty = {
 };
 
 export const initialState = {
-    posts: [],
+    posts: [empty],
     loading: false,
     error: null
 };
@@ -40,6 +40,8 @@ export const postsReducer = (state = initialState, action) => {
             return reducePostLike(state, action);
         case POST_REMOVE:
             return reducePostRemove(state, action);
+        default:
+            return state;
     }
 };
 

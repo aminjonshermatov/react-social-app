@@ -1,11 +1,10 @@
-import { POST_EDIT } from '../actions';
 import { combineReducers } from 'redux';
 import { postsReducer } from "./posts";
 import { editedReducer } from "./edited";
 
 const appReducer = combineReducers({
-    posts: postsReducer,
-    edited: editedReducer
+    edited: editedReducer,
+    posts: postsReducer
 })
 
 /*
@@ -67,22 +66,6 @@ POST_SHOW
     };
 }; */
 
-const reduceEdit = (state, action) => {
-    const { posts } = state;
-    const { payload: { id } } = action;
-
-    const post = posts.find(el => el.id === id);
-    if (post === undefined) {
-        return state;
-    }
-
-    return {
-        ...state,
-        edited: post
-    };
-};
-
-
 
 export const rootReducer = (state, action) => {
     switch (action.type) {
@@ -92,8 +75,6 @@ export const rootReducer = (state, action) => {
             return reducePostToggleVisibility(state, action);
         case POST_SHOW:
             return reducePostToggleVisibility(state, action); */
-        case POST_EDIT:
-            return reduceEdit(state, action);
         default:
             return appReducer(state, action);
     }

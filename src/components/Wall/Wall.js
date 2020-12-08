@@ -1,15 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Post from '../Post/Post';
 import PostForm from '../PostForm/PostForm';
 import { shallowEqual, useSelector, useDispatch } from "react-redux";
-import { postsRequest } from '../../store/actions';
+import { loadPosts } from '../../store/actions'
 
 function Wall() {
-    const { items, loading, error } = useSelector(state => state.posts, shallowEqual);
+    const { posts, loading, error } = useSelector(state => state.posts, shallowEqual);
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        // loadPosts(dispatch);
+        dispatch(loadPosts());
+    }, [dispatch]);
+
     const handleReload = () => {
-        dispatch(postsRequest());
+        // loadPosts(dispatch);
+        dispatch(loadPosts());
     };
 
     if (loading) {
@@ -32,7 +38,7 @@ function Wall() {
         <>
             <PostForm />
             <div>
-                {items.map(item => <Post key={item.id} post={item} />)}
+                {posts.map(item => <Post key={item.id} post={item} />)}
             </div>
         </>
     )
